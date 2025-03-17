@@ -1,17 +1,11 @@
 package com.github.Atu141.Cp1.service;
 
-
-import com.github.Atu141.Cp1.dto.CidadeRequestDTO;
-import com.github.Atu141.Cp1.dto.CidadeResponseDTO;
-import com.github.Atu141.Cp1.entities.Cidade;
+import com.github.Atu141.Cp1.dto.CidadeDTO;
 import com.github.Atu141.Cp1.entities.Evento;
-import com.github.Atu141.Cp1.repositori.CidadeRepository;
 import com.github.Atu141.Cp1.repositori.EventoRepository;
-import com.github.Atu141.Cp1.service.execeptions.DatabaseException;
 import com.github.Atu141.Cp1.service.execeptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,72 +14,52 @@ import java.util.List;
 @Service
 public class CidadeService {
 
-
     @Autowired
-    private CidadeRepository repository;
-
-    @Autowired
-    private EventoRepository eventoRepository;
+    private EventoRepository repository;
 
     @Transactional(readOnly = true)
-    public List<CidadeResponseDTO> findAll() {
-        List<Cidade> list = repository.findAll();
-        return list.stream().map(CidadeResponseDTO::new).toList();
+    public List<CidadeDTO>findAll(){
+        return repository.findAll().stream().map(CidadeDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public CidadeResponseDTO findById(Long id) {
-
-        Cidade entity = repository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Recurso não encontrado. Id: " + id)
+    public CidadeDTO findById(Long id){
+        Evento entity = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso não encontrado. Id" + id)
         );
-        return new CidadeResponseDTO(entity);
+        return new CidadeDTO(entity);
     }
 
     @Transactional
-    public CidadeResponseDTO insert(CidadeRequestDTO requestDTO) {
+    public CidadeDTO create(CidadeDTO dto){
+        Evento entity = new Evento();
+        copyDtoToEntity(dto, entity);
+        entity = repository.save(entity);
+        return new CidadeDTO(entity);
+    }
 
-        try {
-            Cidade entity = new Cidade();
-            // metodo auxiliar para converter DTO para Entity
-            toEntity(requestDTO, entity);
-            entity = repository.save(entity);
-            return new CidadeResponseDTO(entity);
-        } catch (DataIntegrityViolationException ex) {
-            throw new DatabaseException("Violação de integridade referencial - evento ID: "
-                    + requestDTO.evento().getId());
-        }
+    private void copyDtoToEntity(CidadeDTO dto, Evento entity){
+        entity.setNome(dto.getNome());
     }
 
     @Transactional
-    public CidadeResponseDTO update(Long id, CidadeRequestDTO requestDTO){
-
+    public CidadeDTO update(Long id, CidadeDTO dto){
         try{
-            Cidade entity = repository.getReferenceById(id);
-            toEntity(requestDTO, entity);
+            Evento entity = repository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
-            return new CidadeResponseDTO(entity);
-        } catch (EntityNotFoundException ex){
-            throw new ResourceNotFoundException("Recurso não encontrado. Id: " + id);
+            return new CidadeDTO(entity);
+        }catch (EntityNotFoundException ex ){
+            throw new ResourceNotFoundException("Recuso não encontrado. ID" + id);
         }
     }
 
     @Transactional
     public void delete(Long id){
-
-        if(!repository.existsById(id)){
-            throw new ResourceNotFoundException("Recurso não encontrado. Id: " + id);
+        if (!repository.existsById(id)){
+            throw new ResourceNotFoundException("Recuso não encontrado. ID" + id);
         }
         repository.deleteById(id);
     }
 
-    private void toEntity(CidadeRequestDTO requestDTO, Cidade entity) {
-        entity.setNome(requestDTO.nome());
-        entity.setEstado(requestDTO.estado());
-        entity.setUf(requestDTO.uf());
-
-        // Objeto completo gerenciado
-        Evento evento = EventoRepository.getReferenceById(requestDTO.evento().getId());
-        entity.setEvento(evento);
-    }
 }
