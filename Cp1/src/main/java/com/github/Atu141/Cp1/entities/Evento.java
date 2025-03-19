@@ -17,6 +17,7 @@ import java.util.List;
 @Table(name = "tb_evento")
 public class Evento {
 
+    @Id
     private long id;
     private String nome;
     private LocalDate data;
@@ -25,8 +26,15 @@ public class Evento {
 
 
     @ManyToOne
-    @JoinColumn(name = "envento_id", nullable = false)
+    @JoinColumn(name = "evento_id", nullable = false)
     private Cidade cidade;
 
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

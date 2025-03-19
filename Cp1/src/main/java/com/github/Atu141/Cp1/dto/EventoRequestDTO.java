@@ -7,18 +7,19 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 
-public record EventoRequestDTO(
+public record   EventoRequestDTO(
         @NotBlank(message = "Campo Requerido")
         @Size(min = 3, max = 100, message = "O Nome deve ter entre 3 a 100 caracteres")
         String nome,
 
-        @NotBlank(message = "Campo Requerido")
-        @Size(min = 3, max = 100, message = "O Estado deve ter entre 3 a 100 caracteres")
+        @NotNull(message = "Campo Requerido")
+        @Size(message = " formato da data deve ser 'yyyy-mm-dd' ")
         LocalDate data,
 
         @NotBlank(message = "Campo Requerido")
-        @Size(max = 2, message = "O Uf deve ter exatamente 2 caracteres")
+        @Size( min=10, max = 255, message = "O Url deve ter no minimo 10 caracteres")
         String url,
+
         @NotNull(message = "Campo requerido")
         CidadeDTO cidade) {
 

@@ -16,7 +16,7 @@ import java.time.Instant;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class) //nossa classe
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<CustomErrorDTO> handleResourceNotFound(ResourceNotFoundException e,
                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND; //404

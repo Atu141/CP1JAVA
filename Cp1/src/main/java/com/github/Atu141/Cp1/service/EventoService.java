@@ -5,10 +5,11 @@ import com.github.Atu141.Cp1.dto.EventoRequestDTO;
 import com.github.Atu141.Cp1.dto.EventoResponseDTO;
 import com.github.Atu141.Cp1.entities.Cidade;
 import com.github.Atu141.Cp1.entities.Evento;
-import com.github.Atu141.Cp1.repositori.CidadeRepository;
-import com.github.Atu141.Cp1.repositori.EventoRepository;
+import com.github.Atu141.Cp1.repository.CidadeRepository;
+import com.github.Atu141.Cp1.repository.EventoRepository;
 import com.github.Atu141.Cp1.service.execeptions.DatabaseException;
 import com.github.Atu141.Cp1.service.execeptions.ResourceNotFoundException;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,7 +36,6 @@ public class EventoService {
 
     @Transactional(readOnly = true)
     public EventoResponseDTO findById(Long id) {
-
         Evento entity = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado. Id: " + id)
         );
@@ -84,8 +84,9 @@ public class EventoService {
         entity.setData(requestDTO.data());
         entity.setUrl(requestDTO.url());
 
-        // Objeto completo gerenciado
-        Cidade cidade = CidadeRepository.getReferenceById(requestDTO.cidade().getId());
+        Cidade cidade = cidadeRepository.getReferenceById(requestDTO.cidade().getId());
         entity.setCidade(cidade);
     }
+
 }
+

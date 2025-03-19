@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/eventos")
+@RequestMapping("/cidades")
 public class CidadeController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<CidadeDTO> createEvento(
+    public ResponseEntity<CidadeDTO> createCidade(
             @RequestBody @Valid CidadeDTO dto) {
         dto = service.create(dto);
         URI uri = ServletUriComponentsBuilder
@@ -40,11 +40,12 @@ public class CidadeController {
                 .buildAndExpand(dto.getId())
                 .toUri();
 
+
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CidadeDTO> updateEvento(
+    public ResponseEntity<CidadeDTO> updateCidade(
             @PathVariable Long id,
             @RequestBody @Valid CidadeDTO dto) {
         dto = service.update(id, dto);
@@ -52,7 +53,7 @@ public class CidadeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvento(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCidade(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -13,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cidades")
+@RequestMapping("/eventos")
 public class EventoController {
 
     @Autowired
